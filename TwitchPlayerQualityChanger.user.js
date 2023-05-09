@@ -10,7 +10,7 @@
 // @license     MIT
 // @run-at      document-end
 // @homepageURL https://github.com/ramhaidar/Twitch-Player-Quality-Changer
-// @updateURL   https://github.com/ramhaidar/Twitch-Player-Quality-Changer
+// @updateURL   https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.js
 // ==/UserScript==
 
 (function () {

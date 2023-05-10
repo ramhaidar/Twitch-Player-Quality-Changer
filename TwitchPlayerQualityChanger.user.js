@@ -1,25 +1,43 @@
 // ==UserScript==
-// @name        Twitch Player Quality Changer
-// @namespace   https://github.com/ramhaidar/Twitch-Player-Quality-Changer
-// @version     0.0.1
-// @description Automatically change the quality of the Twitch player to your liking.
-// @author      ramhaidar
-// @match       https://www.twitch.tv/, https://player.twitch.tv/*
-// @grant       none
-// @icon        https://www.google.com/s2/favicons?sz=64&domain=twitch.tv
-// @license     MIT
-// @run-at      document-end
-// @homepageURL https://github.com/ramhaidar/Twitch-Player-Quality-Changer
-// @updateURL   https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.js
+// @name            Twitch Player Quality Changer
+// @description     Automatically change the quality of the Twitch player to your liking.
+// @downloadURL     https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.js
+// @namespace       https://github.com/ramhaidar/Twitch-Player-Quality-Changer
+// @version         0.0.3
+// @author          ramhaidar
+// @homepageURL     https://github.com/ramhaidar/Twitch-Player-Quality-Changer
+// @icon            https://www.google.com/s2/favicons?sz=64&domain=twitch.tv
+// @license         MIT
+// @match           https://www.twitch.tv/*
+// @match           https://player.twitch.tv/*
+// @grant           none
+// @run-at          document-end
+// @updateURL       https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.js
 // ==/UserScript==
 
 (function () {
-    "use strict";
+    'use strict';
 
-    function waitForElement(selector, maxAttempts = Infinity, callback) {
-        var attempts = 0;
-        var intervalId = setInterval(function () {
-            var element = document.querySelector(selector);
+    // Set the desired auto-quality.
+    /* Available Quality Options:
+       - 1080p60
+       - 936p60
+       - 720p60
+       - 720p
+       - 480p
+       - 360p
+       - 160p
+    */
+    const PreferedQuality = "480p"; // Change this to your Prefered Quality
+
+    const AllQuality = ["1080p60", "936p60", "720p60", "720p", "480p", "360p", "160p"];
+    const PreferredIndex = AllQuality.indexOf(PreferedQuality);
+
+    // A function that waits for an element to exist in the DOM and then executes a callback function.
+    function waitForElement(selector, maxAttempts = 10, callback) {
+        let attempts = 0;
+        const intervalId = setInterval(function () {
+            const element = document.querySelector(selector);
             if (element) {
                 clearInterval(intervalId);
                 callback(element);
@@ -27,163 +45,108 @@
                 attempts++;
                 if (attempts >= maxAttempts) {
                     clearInterval(intervalId);
-                    console.warn(
-                        "Element " + selector + " found after " + maxAttempts + " attempts"
-                    );
+                    console.warn('Element ' + selector + ' not found after ' + maxAttempts + ' attempts');
                 }
             }
-        }, 1000);
+        }, 100);
     }
 
-    function waitForElementWithText(
-        selector,
-        textContent,
-        maxAttempts = Infinity,
-        callback
-    ) {
-        var attempts = 0;
-        var intervalId = setInterval(function () {
-            var element = document.querySelector(selector);
-            if (element && element.textContent === textContent) {
-                clearInterval(intervalId);
-                callback(element);
-            } else {
-                attempts++;
-                if (attempts >= maxAttempts) {
-                    clearInterval(intervalId);
-                    console.warn(
-                        "Element " + selector + " found after " + maxAttempts + " attempts"
-                    );
-                }
-            }
-        }, 1000);
-    }
+    // Get the element that indicates if a channel is live or offline.
+    const elem = document.querySelector('.tw-channel-status-text-indicator, .channel-status-info');
 
-    // Mencari dimensi layar
-    var screenWidth = window.innerWidth;
-    var screenHeight = window.innerHeight;
-
-    // Menemukan koordinat tengah layar
-    var middleX = screenWidth / 2;
-    var middleY = screenHeight / 2;
-
-    // Membuat klik pada koordinat tengah
-    var clickEvent = new MouseEvent("click", {
-        clientX: middleX,
-        clientY: middleY,
-        button: 0,
-        buttons: 1,
-    });
-
-    // mencari elemen-elemen yang ingin dicari
-    const elem1 = document.querySelector('p[data-a-target="stream-info-title"]');
-    const elem2 = document.querySelector(
-        'p[data-a-target="player-overlay-message"]'
-    );
-
-    // melakukan aksi saat elemen ditemukan
+    // A callback function to execute when the element is found.
     function onElementFound(elem) {
-        console.warn("Salah satu elemen ditemukan:", elem);
+        console.warn('Element found:', elem);
         main();
-        // lakukan aksi pada elemen yang ditemukan di sini
     }
 
-    // menunggu hingga salah satu elemen ditemukan
-    function waitUntilOneElementExists(elem1, elem2, callback) {
-        elem1 = document.querySelector('p[data-a-target="stream-info-title"]');
-        elem2 = document.querySelector('p[data-a-target="player-overlay-message"]');
-        if (elem1 !== null) {
-            callback(elem1);
-        } else if (elem2 !== null) {
-            callback(elem2);
+    // A function that waits until the element exists in the DOM, then executes a callback function.
+    function waitUntilElementExists(elem, callback) {
+        elem = document.querySelector('.tw-channel-status-text-indicator, .channel-status-info');
+        if (elem !== null) {
+            callback(elem);
         } else {
             setTimeout(function () {
-                waitUntilOneElementExists(elem1, elem2, callback);
+                waitUntilElementExists(elem, callback);
             }, 100);
         }
     }
 
-    waitUntilOneElementExists(elem1, elem2, onElementFound);
+    waitUntilElementExists(elem, onElementFound);
 
-    //window.addEventListener('load', function() {
-    //waitForElement('p.CoreText-sc-1txzju1-0.ecTWUv', Infinity, function(element) {
     function main() {
-        //waitForElementWithText('p.CoreText-sc-1txzju1-0.ecTWUv', "LIVE", 10, function(element) {
 
-        var LIVE = false;
-        var Offline = false;
-        if (
-            document.querySelector('p[data-a-target="stream-info-title"]') &&
-            document.querySelector('p[data-a-target="stream-info-title"]')
-                .textContent === "LIVE"
-        ) {
-            LIVE = true;
-        }
-        if (
-            document.querySelector('p[data-a-target="player-overlay-message"]') &&
-            document.querySelector('p[data-a-target="player-overlay-message"]')
-                .textContent === "Offline"
-        ) {
-            Offline = true;
-        }
+        // Check if the channel is live or offline.
+        if (document.querySelector('.tw-channel-status-text-indicator')?.textContent === "LIVE" || document.querySelector('.channel-status-info')?.textContent === "Offline") {
+            console.warn("Channel is live or offline.");
 
-        if (LIVE && !Offline) {
-            // Element exists and text content is "OFFLINE"
-            console.warn("Channel is LIVE.");
+            let settingsButton = null;
+            let settingsMenuButton = null;
 
-            var AutoQuality = "480p";
+            // Click the settings button.
+            waitForElement('[data-a-target="player-settings-button"]', 10, function (element) {
+                settingsButton = element;
+                settingsButton.click();
+            });
 
-            var settingsButton = null;
-            var settingsMenuButton = null;
-            var qualityOptions = null;
+            // Click the quality settings button.
+            waitForElement('[data-a-target="player-settings-menu-item-quality"]', 10, function (element) {
+                settingsMenuButton = element;
+                settingsMenuButton.click();
+            });
 
-            waitForElement(
-                '[data-a-target="player-settings-button"]',
-                Infinity,
-                function (element) {
-                    settingsButton = element;
-                    settingsButton.click();
+            // Wait for the quality options to load and select the preferred quality option.
+            waitForElement('[data-a-target="tw-radio"]', 10, function (element) {
+                const inputs = document.querySelectorAll('input[type="radio"]');
+                var qualityFound = false;
+                for (let i = 0; i < inputs.length; i++) {
+                    const label = inputs[i].parentNode.querySelector('label');
+                    if (label && label.textContent.trim().includes(AllQuality[PreferredIndex])) {
+                        qualityFound = true;
+
+                        inputs[i].checked = true;
+                        inputs[i].click();
+
+                        // Click the settings button again.
+                        waitForElement('[data-a-target="player-settings-button"]', Infinity, function (element) {
+                            var settingsButton = element;
+                            settingsButton.click();
+                            console.warn("Clicked Settings Button");
+                        });
+                    }
                 }
-            );
 
-            waitForElement(
-                '[data-a-target="player-settings-menu-item-quality"]',
-                Infinity,
-                function (element) {
-                    settingsMenuButton = element;
-                    settingsMenuButton.click();
-                }
-            );
+                // If the preferred quality is not available, select the lowest available quality.
+                if (qualityFound === false) {
+                    var lastQualityIndex = AllQuality.length - 1;
 
-            waitForElement(
-                '[data-a-target="tw-radio"]',
-                Infinity,
-                function (element) {
                     const inputs = document.querySelectorAll('input[type="radio"]');
-                    for (let i = 0; i < inputs.length; i++) {
-                        const label = inputs[i].parentNode.querySelector("label");
-                        if (label && label.textContent.trim() === AutoQuality) {
+                    let i = 0;
+                    while (qualityFound === false) {
+                        const label = inputs[i].parentNode.querySelector('label');
+                        if (label && label.textContent.trim().includes(AllQuality[lastQualityIndex])) {
+                            qualityFound = true;
+
                             inputs[i].checked = true;
                             inputs[i].click();
 
-                            waitForElement(
-                                '[data-a-target="player-settings-button"]',
-                                Infinity,
-                                function (element) {
-                                    var settingsButton = element;
-                                    settingsButton.click();
-                                }
-                            );
-
-                            break;
+                            // Click the settings button again.
+                            waitForElement('[data-a-target="player-settings-button"]', Infinity, function (element) {
+                                var settingsButton = element;
+                                settingsButton.click();
+                                console.warn("Clicked Settings Button");
+                            });
                         }
+                        if (i == inputs.length - 1) {
+                            lastQualityIndex--;
+                        }
+                        i++;
                     }
                 }
-            );
+            });
 
-            document.elementFromPoint(middleX, middleY).dispatchEvent(clickEvent);
         } else {
-            console.warn("Channel is Offline.");
+            console.warn("Can't detect whether Channel is live or offline.");
         }
     }
 })();

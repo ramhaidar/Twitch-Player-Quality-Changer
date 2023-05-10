@@ -6,7 +6,7 @@ It is useful when you have a slow internet connection or when you want to conser
 ## Installation
 
 1. Install a UserScript manager such as [TamperMonkey](https://www.tampermonkey.net/) or any other UserScript manager you prefer in your browser.
-2. Click [here](https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.js) to install the UserScript.
+2. Click [here](https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.user.js) to install the UserScript.
 
 ## Usage
 

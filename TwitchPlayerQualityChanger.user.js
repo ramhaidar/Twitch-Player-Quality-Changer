@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            Twitch Player Quality Changer
 // @description     Automatically change the quality of the Twitch player to your liking.
-// @downloadURL     https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.js
+// @downloadURL     https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.user.js
 // @namespace       https://github.com/ramhaidar/Twitch-Player-Quality-Changer
 // @version         0.0.3
 // @author          ramhaidar
@@ -12,7 +12,7 @@
 // @match           https://player.twitch.tv/*
 // @grant           none
 // @run-at          document-end
-// @updateURL       https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.js
+// @updateURL       https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.user.js
 // ==/UserScript==
 
 (function () {

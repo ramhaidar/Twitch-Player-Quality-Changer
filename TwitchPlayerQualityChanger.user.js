@@ -3,7 +3,7 @@
 // @description     Automatically change the quality of the Twitch player to your liking.
 // @downloadURL     https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.user.js
 // @namespace       https://github.com/ramhaidar/Twitch-Player-Quality-Changer
-// @version         0.0.6
+// @version         0.0.7
 // @author          ramhaidar
 // @homepageURL     https://github.com/ramhaidar/Twitch-Player-Quality-Changer
 // @icon            https://www.google.com/s2/favicons?sz=64&domain=twitch.tv
@@ -48,7 +48,7 @@
                     console.warn('Element ' + selector + ' not found after ' + maxAttempts + ' attempts');
                 }
             }
-        }, 100);
+        }, 500);
     }
 
     // Get the element that indicates if a channel is live or offline.
@@ -68,7 +68,7 @@
         } else {
             setTimeout(function () {
                 waitUntilElementExists(elem, callback);
-            }, 100);
+            }, 500);
         }
     }
 
@@ -84,51 +84,40 @@
             let settingsMenuButton = null;
 
             // Click the settings button.
-            waitForElement('[data-a-target="player-settings-button"]', 10, function (element) {
+            waitForElement('[data-a-target="player-settings-button"]', 25, function (element) {
                 settingsButton = element;
                 settingsButton.click();
             });
 
             // Click the quality settings button.
-            waitForElement('[data-a-target="player-settings-menu-item-quality"]', 10, function (element) {
+            waitForElement('[data-a-target="player-settings-menu-item-quality"]', 25, function (element) {
                 settingsMenuButton = element;
                 settingsMenuButton.click();
             });
 
             // Wait for the quality options to load and select the preferred quality option.
-            waitForElement('[data-a-target="tw-radio"]', 10, function (element) {
+            waitForElement('[data-a-target="tw-radio"]', 25, function (element) {
                 const inputs = document.querySelectorAll('input[type="radio"]');
                 var qualityFound = false;
-                for (let i = 0; i < inputs.length; i++) {
-                    const label = inputs[i].parentNode.querySelector('label');
-                    if (label && label.textContent.trim().includes(AllQuality[PreferredIndex])) {
+
+                var inputsx = document.querySelectorAll('input[type="radio"]')
+                for (let i = 0; i < inputsx.length; i++) {
+                    if (inputsx[i].parentNode.textContent.includes(AllQuality[PreferredIndex])) {
                         qualityFound = true;
-
-                        inputs[i].checked = true;
-                        inputs[i].click();
-
-                        // Click the settings button again.
-                        waitForElement('[data-a-target="player-settings-button"]', Infinity, function (element) {
-                            var settingsButton = element;
-                            settingsButton.click();
-                            console.warn("Clicked Settings Button");
-                        });
                     }
                 }
 
-                // If the preferred quality is not available, select the lowest available quality.
-                if (qualityFound === false) {
-                    var lastQualityIndex = AllQuality.length - 1;
+                console.warn("Preferred Quality Found: " + qualityFound);
 
-                    const inputs = document.querySelectorAll('input[type="radio"]');
-                    let i = 0;
-                    while (qualityFound === false) {
+                // If the preferred quality is available, select it.
+                if (qualityFound == true) {
+                    for (let i = 0; i < inputs.length; i++) {
                         const label = inputs[i].parentNode.querySelector('label');
-                        if (label && label.textContent.trim().includes(AllQuality[lastQualityIndex])) {
-                            qualityFound = true;
-
+                        if (label && label.textContent.trim().includes(AllQuality[PreferredIndex])) {
                             inputs[i].checked = true;
                             inputs[i].click();
+
+                            console.warn("Quality Used: " + inputs[i].parentNode.querySelector('label').textContent);
 
                             // Click the settings button again.
                             waitForElement('[data-a-target="player-settings-button"]', Infinity, function (element) {
@@ -137,14 +126,27 @@
                                 console.warn("Clicked Settings Button");
                             });
                         }
-                        if (i == inputs.length - 1) {
-                            lastQualityIndex--;
-                        }
-                        i++;
                     }
                 }
-            });
 
+                // If the preferred quality is not available, select the lowest available quality.
+                if (qualityFound == false) {
+                    var lastQualityIndex = AllQuality.length - 1;
+
+                    var lastInputIndex = inputsx.length - 1;
+                    inputsx[lastInputIndex].checked = true;
+                    inputsx[lastInputIndex].click();
+
+                    console.warn("Quality Used: " + inputsx[lastInputIndex].parentNode.querySelector('label').textContent);
+
+                    // Click the settings button again.
+                    waitForElement('[data-a-target="player-settings-button"]', Infinity, function (element) {
+                        var settingsButton = element;
+                        settingsButton.click();
+                        console.warn("Clicked Settings Button");
+                    });
+                }
+            });
         } else {
             console.warn("Can't detect whether Channel is live or offline.");
         }

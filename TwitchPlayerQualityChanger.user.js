@@ -3,13 +3,12 @@
 // @description     Automatically change the quality of the Twitch player to your liking.
 // @downloadURL     https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.user.js
 // @namespace       https://github.com/ramhaidar/Twitch-Player-Quality-Changer
-// @version         0.0.3
+// @version         0.0.5
 // @author          ramhaidar
 // @homepageURL     https://github.com/ramhaidar/Twitch-Player-Quality-Changer
 // @icon            https://www.google.com/s2/favicons?sz=64&domain=twitch.tv
 // @license         MIT
-// @match           https://www.twitch.tv/*
-// @match           https://player.twitch.tv/*
+// @match           https://www.twitch.tv/*, https://player.twitch.tv/*
 // @grant           none
 // @run-at          document-end
 // @updateURL       https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.user.js

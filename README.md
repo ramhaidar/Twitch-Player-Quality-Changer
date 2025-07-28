@@ -1,16 +1,21 @@
-# Twitch Player Quality Changer
+# Twitch Player Quality Changer (English & Traditional Chinese Versions)
 
-This is a UserScript that automatically changes the quality of the Twitch player to your liking.  
-It is useful when you have a slow internet connection or when you want to conserve your data plan.
+This UserScript automatically changes the quality of the Twitch player to your preferred setting. Available in two language versions:
+- English (`TwitchPlayerQualityChanger_en-us.user.js`)
+- Traditional Chinese (`TwitchPlayerQualityChanger_zh-tw.user.js`)
+
+Useful when you have a slow internet connection or want to conserve data.
 
 ## Installation
 
-1. Install a UserScript manager such as [TamperMonkey](https://www.tampermonkey.net/) or any other UserScript manager you prefer in your browser.
-2. Click [here](https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger.js) to install the UserScript.
+1. Install a UserScript manager like [TamperMonkey](https://www.tampermonkey.net/)
+2. Install your preferred language version:
+   - [English version](https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger_en-us.user.js)
+   - [Traditional Chinese version](https://github.com/ramhaidar/Twitch-Player-Quality-Changer/raw/main/TwitchPlayerQualityChanger_zh-tw.user.js)
 
 ## Usage
 
-1. Set the desired auto-quality by changing the value of `PreferedQuality` in the script (Default: 480p). Available Quality Options:
+1. Set your preferred quality by changing `PreferedQuality` in the script (Default: 480p). Available options:
    - 1080p60
    - 936p60
    - 720p60
@@ -18,11 +23,15 @@ It is useful when you have a slow internet connection or when you want to conser
    - 480p
    - 360p
    - 160p
-2. Open any Twitch stream or VOD.
-3. The script will automatically change the quality of the video player to your preferred quality.
+2. Open any Twitch stream or VOD
+3. The script will automatically set the player to your preferred quality
 
-\* Automatically uses the lowest quality if the desired quality cannot be selected.
+* Automatically uses lowest available quality if preferred quality isn't selectable
+
+## Credits
+
+Traditional Chinese localization by [@asd8971](https://github.com/asd8971)
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/ramhaidar/Twitch-Player-Quality-Changer/blob/main/LICENSE).
+MIT License - see [LICENSE file](https://github.com/ramhaidar/Twitch-Player-Quality-Changer/blob/main/LICENSE)
